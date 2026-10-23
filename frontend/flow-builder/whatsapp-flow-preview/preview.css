@@ -1,0 +1,357 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── WhatsApp Flow preview ─────────────────────────────────────────────────
+ *
+ * The phone preview's stylesheet, compiled into the shipped CSS with the rest
+ * of the builder's (imported from app.css), so nothing injects a <style> at
+ * runtime. Every selector starts at the builder root and carries the `wafp-`
+ * class prefix, so it can't touch the host page.
+ *
+ * Deliberately not themed: the preview imitates WhatsApp's own UI, so it keeps
+ * a fixed palette (no --fb-* tokens) whatever the brand. Unlayered, like the
+ * rest of app.css; the root attribute adds one attribute's specificity to each
+ * rule uniformly, so the rules rank against each other as they always did.
+ */
+[data-flowbuilder-root] .wafp-root,
+[data-flowbuilder-root] .wafp-root *,
+[data-flowbuilder-root] .wafp-root *::before,
+[data-flowbuilder-root] .wafp-root *::after { box-sizing: border-box; }
+[data-flowbuilder-root] .wafp-root {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: #111B21;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  line-height: 1.4;
+}
+
+/* ── Scaled outer box: reserves the final (scaled) dimensions ────────────── */
+[data-flowbuilder-root] .wafp-scale {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+[data-flowbuilder-root] .wafp-scale-inner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform-origin: top left;
+}
+
+/* ── Surface (the white Flow screen) ────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-surface {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  overflow: hidden;
+  position: relative;
+}
+[data-flowbuilder-root] .wafp-surface--inert { pointer-events: none; user-select: none; }
+
+/* ── Top bar ─────────────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-topbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 48px;
+  padding: 0 12px;
+  border-bottom: 1px solid #e9edef;
+  background: #ffffff;
+}
+[data-flowbuilder-root] .wafp-topbar-back,
+[data-flowbuilder-root] .wafp-topbar-menu {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: #111B21;
+  flex: 0 0 auto;
+}
+[data-flowbuilder-root] .wafp-topbar-title {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 600;
+  color: #111B21;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Scrolling content region ───────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  scrollbar-width: none;
+}
+[data-flowbuilder-root] .wafp-scroll::-webkit-scrollbar { width: 0; height: 0; }
+[data-flowbuilder-root] .wafp-block { min-width: 0; }
+
+/* ── Typography ─────────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-heading { margin: 0; font-size: 21px; font-weight: 600; line-height: 1.3; color: #111B21; word-break: break-word; }
+[data-flowbuilder-root] .wafp-subheading { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.35; color: #111B21; word-break: break-word; }
+[data-flowbuilder-root] .wafp-body { margin: 0; font-size: 14px; font-weight: 400; line-height: 1.45; color: #111B21; white-space: pre-wrap; word-break: break-word; }
+[data-flowbuilder-root] .wafp-caption { margin: 0; font-size: 12px; font-weight: 400; line-height: 1.4; color: #667781; white-space: pre-wrap; word-break: break-word; }
+
+[data-flowbuilder-root] .wafp-richtext { font-size: 14px; line-height: 1.5; color: #111B21; word-break: break-word; }
+[data-flowbuilder-root] .wafp-richtext p { margin: 0 0 8px; }
+[data-flowbuilder-root] .wafp-richtext p:last-child { margin-bottom: 0; }
+[data-flowbuilder-root] .wafp-richtext strong,
+[data-flowbuilder-root] .wafp-richtext b { font-weight: 700; }
+[data-flowbuilder-root] .wafp-richtext em,
+[data-flowbuilder-root] .wafp-richtext i { font-style: italic; }
+[data-flowbuilder-root] .wafp-richtext a { color: #008069; font-weight: 600; text-decoration: none; }
+[data-flowbuilder-root] .wafp-richtext ul,
+[data-flowbuilder-root] .wafp-richtext ol { margin: 6px 0; padding-left: 20px; }
+[data-flowbuilder-root] .wafp-richtext li { margin: 2px 0; }
+
+[data-flowbuilder-root] .wafp-link { display: inline-block; color: #008069; font-weight: 600; font-size: 14px; text-decoration: none; }
+
+/* ── Field shell (input / textarea / dropdown / datepicker) ─────────────── */
+[data-flowbuilder-root] .wafp-field { display: flex; flex-direction: column; gap: 7px; }
+[data-flowbuilder-root] .wafp-field-label { font-size: 13px; font-weight: 600; color: #111B21; line-height: 1.35; }
+[data-flowbuilder-root] .wafp-req { color: #667781; margin-left: 3px; font-weight: 600; }
+[data-flowbuilder-root] .wafp-field-hint { font-size: 12px; color: #667781; line-height: 1.35; }
+[data-flowbuilder-root] .wafp-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 50px;
+  padding: 0 14px;
+  border: 1px solid #d1d7db;
+  border-radius: 8px;
+  background: #ffffff;
+  font-size: 15px;
+  color: #111B21;
+}
+[data-flowbuilder-root] .wafp-input--textarea { min-height: 92px; padding: 13px 14px; align-items: flex-start; }
+[data-flowbuilder-root] .wafp-input-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-flowbuilder-root] .wafp-input--textarea .wafp-input-value { white-space: pre-wrap; overflow: visible; }
+[data-flowbuilder-root] .wafp-input-placeholder { color: #8696a0; }
+[data-flowbuilder-root] .wafp-input-affix { flex: 0 0 auto; margin-left: auto; color: #667781; display: grid; place-items: center; }
+
+/* ── Choice groups (radio / checkbox) ───────────────────────────────────── */
+[data-flowbuilder-root] .wafp-choice { display: flex; flex-direction: column; }
+[data-flowbuilder-root] .wafp-choice-label { font-size: 13px; font-weight: 600; color: #111B21; padding-bottom: 11px; border-bottom: 1px solid #e9edef; }
+[data-flowbuilder-root] .wafp-choice-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 47px;
+  border-bottom: 1px solid #e9edef;
+}
+[data-flowbuilder-root] .wafp-choice-row--disabled { opacity: 0.5; }
+[data-flowbuilder-root] .wafp-choice-text { flex: 1; min-width: 0; font-size: 15px; color: #111B21; word-break: break-word; }
+[data-flowbuilder-root] .wafp-choice-desc { font-size: 12px; color: #667781; margin-top: 2px; }
+
+[data-flowbuilder-root] .wafp-radio {
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 2px solid #c4ccd1;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+}
+[data-flowbuilder-root] .wafp-radio--on { border-color: #008069; }
+[data-flowbuilder-root] .wafp-radio--on::after { content: ""; width: 11px; height: 11px; border-radius: 50%; background: #008069; }
+
+[data-flowbuilder-root] .wafp-check {
+  flex: 0 0 auto;
+  width: 22px; height: 22px;
+  border-radius: 5px;
+  border: 2px solid #c4ccd1;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  color: #fff;
+}
+[data-flowbuilder-root] .wafp-check--on { background: #008069; border-color: #008069; }
+
+/* ── Chips selector ─────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+[data-flowbuilder-root] .wafp-chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 34px;
+  padding: 0 16px;
+  border-radius: 18px;
+  border: 1px solid #d1d7db;
+  background: #ffffff;
+  color: #111B21;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+[data-flowbuilder-root] .wafp-chip--on { border-color: #008069; color: #008069; font-weight: 600; }
+[data-flowbuilder-root] .wafp-chip--disabled { opacity: 0.5; }
+
+/* ── OptIn ──────────────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-optin { display: flex; align-items: flex-start; gap: 12px; }
+[data-flowbuilder-root] .wafp-optin-label { flex: 1; min-width: 0; font-size: 14px; line-height: 1.4; color: #111B21; word-break: break-word; }
+
+/* ── Calendar ───────────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-calendar { border: 1px solid #e9edef; border-radius: 8px; padding: 12px 14px; }
+[data-flowbuilder-root] .wafp-cal-title { font-size: 14px; font-weight: 600; color: #111B21; margin-bottom: 10px; }
+[data-flowbuilder-root] .wafp-cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px 0; text-align: center; }
+[data-flowbuilder-root] .wafp-cal-dow { font-size: 11px; font-weight: 600; color: #667781; padding: 4px 0; }
+[data-flowbuilder-root] .wafp-cal-day {
+  aspect-ratio: 1 / 1;
+  display: grid;
+  place-items: center;
+  font-size: 13px;
+  color: #111B21;
+  border-radius: 50%;
+  margin: 1px auto;
+  width: 28px;
+}
+[data-flowbuilder-root] .wafp-cal-day--muted { color: #c4ccd1; }
+[data-flowbuilder-root] .wafp-cal-day--range { background: #d9f2ec; border-radius: 8px; width: 100%; }
+[data-flowbuilder-root] .wafp-cal-day--sel { background: #008069; color: #fff; }
+
+/* ── Image / carousel ───────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-image {
+  display: block;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  background: #f0f2f5;
+  position: relative;
+}
+[data-flowbuilder-root] .wafp-image img { display: block; width: 100%; height: 100%; }
+[data-flowbuilder-root] .wafp-image--placeholder {
+  display: grid;
+  place-items: center;
+  color: #8696a0;
+  min-height: 120px;
+}
+[data-flowbuilder-root] .wafp-carousel { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+[data-flowbuilder-root] .wafp-carousel::-webkit-scrollbar { height: 0; }
+[data-flowbuilder-root] .wafp-carousel-item { flex: 0 0 78%; border-radius: 8px; overflow: hidden; }
+
+/* ── Upload (photo / document picker) ───────────────────────────────────── */
+[data-flowbuilder-root] .wafp-upload {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border: 1px dashed #c4ccd1;
+  border-radius: 8px;
+  background: #ffffff;
+}
+[data-flowbuilder-root] .wafp-upload-icon { flex: 0 0 auto; width: 40px; height: 40px; border-radius: 8px; background: #e7f4f0; color: #008069; display: grid; place-items: center; }
+[data-flowbuilder-root] .wafp-upload-text { flex: 1; min-width: 0; }
+[data-flowbuilder-root] .wafp-upload-title { font-size: 15px; font-weight: 600; color: #111B21; }
+[data-flowbuilder-root] .wafp-upload-sub { font-size: 12px; color: #667781; margin-top: 2px; }
+[data-flowbuilder-root] .wafp-upload-action { flex: 0 0 auto; color: #008069; font-weight: 600; font-size: 14px; margin-left: auto; }
+
+/* ── Navigation list ────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-navlist { display: flex; flex-direction: column; }
+[data-flowbuilder-root] .wafp-nav-row { display: flex; align-items: center; gap: 12px; min-height: 61px; padding: 8px 0; border-bottom: 1px solid #e9edef; }
+[data-flowbuilder-root] .wafp-nav-avatar { flex: 0 0 auto; width: 36px; height: 36px; border-radius: 8px; background: #e7f4f0; color: #008069; display: grid; place-items: center; font-weight: 700; font-size: 14px; overflow: hidden; }
+[data-flowbuilder-root] .wafp-nav-avatar img { width: 100%; height: 100%; object-fit: cover; }
+[data-flowbuilder-root] .wafp-nav-text { flex: 1; min-width: 0; }
+[data-flowbuilder-root] .wafp-nav-title { font-size: 15px; font-weight: 600; color: #111B21; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-flowbuilder-root] .wafp-nav-sub { font-size: 12px; color: #667781; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+[data-flowbuilder-root] .wafp-nav-meta { flex: 0 0 auto; font-size: 12px; color: #667781; }
+[data-flowbuilder-root] .wafp-nav-chevron { flex: 0 0 auto; color: #c4ccd1; display: grid; place-items: center; }
+
+/* ── Footer (pinned) ────────────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-footer {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 16px 14px;
+  border-top: 1px solid #e9edef;
+  background: #ffffff;
+}
+[data-flowbuilder-root] .wafp-footer-captions { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+[data-flowbuilder-root] .wafp-footer-caption { font-size: 12px; color: #8696a0; text-align: center; }
+[data-flowbuilder-root] .wafp-footer-caption--center { flex: 1; text-align: center; }
+[data-flowbuilder-root] .wafp-footer-btn {
+  width: 100%;
+  min-height: 45px;
+  border-radius: 9px;
+  border: none;
+  background: #008069;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  padding: 0 16px;
+}
+[data-flowbuilder-root] .wafp-footer-btn--disabled { background: #e9edef; color: #8696a0; }
+
+/* ── Unknown-component fallback ─────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-unknown {
+  border: 1px dashed #d1d7db;
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: #f7f8fa;
+  color: #8696a0;
+  font-size: 12px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+[data-flowbuilder-root] .wafp-unknown code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+/* ── Empty / error states ───────────────────────────────────────────────── */
+[data-flowbuilder-root] .wafp-empty {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 24px;
+  color: #667781;
+  font-size: 13px;
+}
+
+/* ── Phone frame (device chrome wrapping the surface) ────────────────────── */
+[data-flowbuilder-root] .wafp-phone {
+  display: inline-flex;
+  flex-direction: column;
+  background: #ffffff;
+  border: 1px solid #d1d7db;
+  /* Rounded top only: the bottom is meant to be sliced by its container, so a
+     rounded base would read as a floating phone rather than a cut-off one. */
+  border-radius: 20px 20px 0 0;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(17, 27, 33, 0.12), 0 1px 2px rgba(17, 27, 33, 0.08);
+}
+[data-flowbuilder-root] .wafp-phone-statusbar {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 20px;
+  padding: 0 12px 0 13px;
+  background: #ffffff;
+  color: #111B21;
+}
+[data-flowbuilder-root] .wafp-phone-time { font-size: 11px; font-weight: 700; letter-spacing: 0.2px; }
+[data-flowbuilder-root] .wafp-phone-status-icons { display: inline-flex; align-items: center; gap: 4px; color: #111B21; }
+[data-flowbuilder-root] .wafp-phone-status-icons svg { display: block; }
+[data-flowbuilder-root] .wafp-phone-body { position: relative; display: block; }

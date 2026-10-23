@@ -1,0 +1,168 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── Flow Builder stylesheet ───────────────────────────────────────────────
+ *
+ * Tailwind entry point, compiled by `npm run build:frontend` to
+ * `frontend/app.css` (linked from `frontend/index.html`). The default look's
+ * values live in `theme.css` and other brands' in `brands/`; components are
+ * styled with utilities in their JSX. This file only wires Tailwind up and
+ * holds the few rules utilities express badly.
+ *
+ * Everything it emits is scoped to the builder root, `[data-flowbuilder-root]`,
+ * so the builder can sit inside someone else's page without restyling it:
+ * Tailwind's reset is our scoped copy (preflight.css), every token is declared
+ * on the root (theme.css), and every utility is nested under the root below.
+ *
+ * It works the other way round too, as far as plain CSS allows. The rules are
+ * deliberately not in cascade layers: a host page's unlayered CSS beats any
+ * layered rule whatever its specificity, so a host `h1 { color: … }` would
+ * recolour the builder's headings. Unlayered, every rule here starts with the
+ * root attribute, one step more specific than the host's element and
+ * single-class selectors. Within the builder the order is then by source:
+ * reset, base, components, utilities, the same as Tailwind's layers. Only the
+ * tokens stay in a layer (`theme`), so a host can override any `--fb-*` with a
+ * plain rule. A host selector with an id or several classes can still reach
+ * in; the web component's Shadow DOM closes that.
+ * The only document-wide rules are @font-face (prefixed family names, see
+ * fonts.css), @keyframes (prefixed `fb-` names) and Tailwind's @property
+ * registrations for its internal `--tw-*` properties, which have no visible
+ * effect on their own. `npm run test:frontend` checks nothing else escapes.
+ */
+
+@layer theme;
+
+/* Tailwind's theme functions and variants, without declaring its variables
+   on :root; tailwind-theme.css maps its names onto our tokens. */
+@import 'tailwindcss/theme.css' layer(theme) theme(reference);
+@import './tailwind-theme.css';
+@import './fonts.css';
+@import './preflight.css';
+@import './isolation.css';
+@import './theme.css';
+@import '../whatsapp-flow-preview/preview.css';
+
+/* Only the app's own sources may add classes, so stray HTML elsewhere in the
+   repo can't leak into the bundle. Tests are skipped too: their fixture
+   strings (class names, `url(...)` values) would otherwise become real rules. */
+@source '..';
+@source not '../**/*.test.{ts,tsx}';
+
+@custom-variant dark (&:where([data-flowbuilder-root][data-theme='dark'], [data-flowbuilder-root][data-theme='dark'] *));
+
+/* Breakpoints, desktop-first, against the builder's own width rather than the
+   window's: the root is a size container (below), so an embed in a 900px
+   column gets the narrow layout even in a wide window. Written out rather than
+   `max-[960px]:` because Tailwind's `max-*` excludes its boundary while these
+   layouts switch at max-width: 960px inclusive. Wider first, so `narrow:`
+   wins a tie. A container can't query itself, so these never apply to the
+   root element; nothing in the app puts them there. */
+@custom-variant compact (@container flowbuilder (max-width: 1180px)); /* the editor's status bar sheds a readout */
+@custom-variant narrow (@container flowbuilder (max-width: 960px)); /* single-column layouts */
+
+/* The app root (FlowBuilderApp), marked with data-flowbuilder-root. Utilities
+   only reach the root's descendants, so the root's own styling lives here. */
+[data-flowbuilder-root] {
+  /* The breakpoints above measure this element. */
+  container: flowbuilder / inline-size;
+  background-color: var(--fb-color-canvas);
+  color: var(--fb-text-color-default);
+  font-family: var(--fb-font-sans);
+  font-size: 14px;
+  /* One family, three jobs: 400 reads, 500 responds, 600 titles. */
+  font-weight: 400;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+[data-flowbuilder-root] :is(h1, h2, h3, h4) {
+  font-weight: 600;
+}
+
+[data-flowbuilder-root] :focus-visible {
+  outline: 2px solid var(--fb-color-focus-ring);
+  outline-offset: 2px;
+}
+
+
+/* ── JSON code editor ────────────────────────────────────────────────────
+ * A textarea carries the text, caret, selection and native undo stack but
+ * paints nothing; the highlight layer underneath paints the syntax colours
+ * and find matches. They stay pixel-aligned only if both use the same font
+ * metrics and padding, so everything here reads the --code-* properties the
+ * editor sets inline from CODE_METRICS (styles/tokens.ts). */
+[data-flowbuilder-root] .fb-code-text {
+  font-family: var(--fb-font-mono);
+  font-size: var(--code-font-size);
+  line-height: var(--code-line-height);
+  tab-size: var(--code-tab-size);
+}
+
+[data-flowbuilder-root] .fb-code-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: var(--code-pad-top) var(--code-pad-right) var(--code-pad-bottom) var(--code-pad-left);
+  border: 0;
+  /* The editor's focus-within border is the focus indicator. */
+  outline: none;
+  resize: none;
+  overflow: auto;
+  white-space: pre;
+  overflow-wrap: normal;
+  background: transparent;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  caret-color: var(--fb-text-color-default);
+}
+[data-flowbuilder-root] .fb-code-input::selection {
+  background: var(--fb-color-code-selection);
+}
+[data-flowbuilder-root] .fb-code-input:disabled {
+  cursor: not-allowed;
+}
+[data-flowbuilder-root] .fb-code-input::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+[data-flowbuilder-root] .fb-code-input::-webkit-scrollbar-track,
+[data-flowbuilder-root] .fb-code-input::-webkit-scrollbar-corner {
+  background: transparent;
+}
+[data-flowbuilder-root] .fb-code-input::-webkit-scrollbar-thumb {
+  border: 3px solid transparent;
+  border-radius: var(--fb-radius-lg);
+  background: var(--fb-color-code-gutter-text);
+  background-clip: content-box;
+  opacity: 0.5;
+}
+
+/* Layout "fill": the root takes its size from the host's container and clips;
+   an inner [data-fb-scroll] element scrolls (FlowBuilderApp). */
+[data-flowbuilder-root][data-layout='fill'] {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Every utility, nested under the builder root, last so a utility wins a tie
+   with the rules above, as Tailwind's utilities layer would. */
+[data-flowbuilder-root] {
+  @tailwind utilities;
+}

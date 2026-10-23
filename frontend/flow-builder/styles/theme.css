@@ -1,0 +1,290 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── Flow Builder theme ────────────────────────────────────────────────────
+ *
+ * The one file to edit to rebrand your instance. Every colour (light and
+ * dark), the button palette, the fonts, the corner radii and the motion
+ * defaults are set here, as public `--fb-*` custom properties on the builder
+ * root. Nothing is declared on :root, so a host page's own variables are
+ * never touched, and a host can override any token on the root itself.
+ *
+ * To rebrand: change the values below, then run `npm run build:frontend`
+ * (or keep `npm run dev:frontend` running) and reload the page.
+ *
+ * Dark mode: the first block holds the light values. The app root carries
+ * `data-flowbuilder-root` and `data-theme="light|dark"`, and the
+ * `[data-flowbuilder-root][data-theme="dark"]` block further down overrides
+ * the same names, so a component written once is right in both themes (a
+ * `data-theme` elsewhere on the page, e.g. on <html>, doesn't affect the app).
+ * Give every new light colour a dark twin — `npm run test:frontend` checks.
+ *
+ * Where the brand colours appear. Several tokens hold their own copy of the
+ * brand teal or orange (deliberately — e.g. buttons can be retinted alone), so
+ * a rebrand should visit every one of them, in the light AND dark blocks:
+ *   Teal:   --fb-color-primary, --fb-color-primary-soft (tint), --fb-color-focus-ring,
+ *           --fb-color-code-key, --fb-color-code-selection (translucent),
+ *           --fb-color-btn-primary-bg / -bg-hover / -bg-active.
+ *   Orange: --fb-color-accent, --fb-color-accent-soft (tint), --fb-color-nav-active
+ *           (both-themes block), --fb-color-code-match / -match-active
+ *           (translucent), --fb-color-btn-accent-bg / -bg-hover / -bg-active,
+ *           --fb-color-code-string (a darker shade, light #a8400d / dark #ff9d6b).
+ * Outside this file, the favicon `frontend/assets/sparkle-mark.svg` hard-codes
+ * the brand orange (#ff6a1a); edit or replace it separately.
+ *
+ * Utilities: tailwind-theme.css maps each token to Tailwind's name for it,
+ * so `--fb-color-surface` → `bg-surface`, `--fb-text-color-muted` →
+ * `text-muted`, `--fb-border-color-strong` → `border-strong`, `--fb-radius` →
+ * `rounded`. Text and border roles sit in Tailwind's `--text-color-*` /
+ * `--border-color-*` namespaces so their utilities read `text-muted` rather
+ * than `text-text-muted`; everything else is a colour any utility (bg, text,
+ * border, ring…) can use. A new token needs its line there too.
+ *
+ * The WhatsApp phone preview (`whatsapp-flow-preview/`) is intentionally not
+ * themed: it imitates WhatsApp's own UI, so it keeps a fixed palette whatever
+ * the brand here.
+ *
+ * Brands. This file is the default look. `brands/<name>.css` layers another
+ * one over it for `data-brand="<name>"` on the app root (Settings → Appearance
+ * picks it). A brand overrides names defined here and adds none, and
+ * `npm run test:frontend` checks it sets every colour in both modes.
+ */
+
+/* ── Colours · light theme ─────────────────────────────────────────────────
+ * Each of these has a dark value in the `[data-flowbuilder-root][data-theme="dark"]` block below.
+ * Tailwind's default palette is switched off (tailwind-theme.css), so
+ * `bg-blue-500` and friends don't exist — only the names here do. */
+@layer theme {
+  [data-flowbuilder-root] {
+    /* Content surfaces */
+    --fb-color-canvas: #f4f5f3; /* page background behind everything */
+    --fb-color-surface: #ffffff; /* cards, panels, headers, inputs */
+    --fb-color-surface-raised: #ffffff; /* menus and popovers above a surface */
+    --fb-color-surface-sunken: #eceee9; /* wells, hovers, neutral badges */
+
+    /* Borders */
+    --fb-border-color-default: #c9cdc7;
+    --fb-border-color-strong: #1c2226; /* inputs, secondary buttons, dialogs */
+
+    /* Text */
+    --fb-text-color-default: #1a1f22;
+    --fb-text-color-muted: #525a5f;
+    --fb-text-color-subtle: #767d82; /* hints, placeholders, timestamps */
+
+    /* Graphite navigation rail. Only its background shifts in dark mode; the
+       rest of the rail is shared by both themes (see the next block). */
+    --fb-color-nav-bg: #1c2226;
+
+    /* Primary (deep teal) and accent (orange). Buttons take their colours from
+       the button palette at the end of this block, not from these. */
+    --fb-color-primary: #0f6d6d;
+    --fb-color-on-primary: #ffffff; /* text on a primary fill */
+    --fb-color-primary-soft: #e0efee;
+    --fb-color-accent: #f2600f; /* active indicators: tab underline, dots, checks */
+    --fb-color-accent-soft: #fce8dc;
+
+    /* Status tones: the strong colour for text/borders, the soft one for fills */
+    --fb-color-danger: #c0392b;
+    --fb-color-danger-soft: #fbe5e2;
+    --fb-color-success: #1f7a4d;
+    --fb-color-success-soft: #e0f0e7;
+    --fb-color-warning: #b5730a;
+    --fb-color-warning-soft: #fbeed6;
+
+    /* Interaction */
+    --fb-color-focus-ring: #0f6d6d;
+    --fb-color-overlay: rgba(20, 26, 29, 0.55); /* dims the page behind dialogs */
+
+    /* JSON code editor: surface, gutter and syntax palette */
+    --fb-color-code-bg: #ffffff;
+    --fb-color-code-chrome: #eceee9; /* tab bar and status bar */
+    --fb-color-code-gutter-text: #9aa2a6;
+    --fb-color-code-gutter-active: #1a1f22;
+    --fb-color-code-line-active: #f3f6f4;
+    --fb-color-code-selection: rgba(15, 109, 109, 0.20);
+    --fb-color-code-key: #0f6d6d;
+    --fb-color-code-string: #a8400d;
+    --fb-color-code-number: #1f7a4d;
+    --fb-color-code-literal: #8a5a00;
+    --fb-color-code-punctuation: #8b9296;
+    --fb-color-code-match: rgba(242, 96, 15, 0.22);
+    --fb-color-code-match-active: rgba(242, 96, 15, 0.55);
+
+    /* Buttons. Each variant owns its five colours — background, hovered and
+       pressed background, text, border — so buttons can be retinted without
+       touching badges, links or focus rings. A variant with no distinct pressed
+       step repeats its hover colour. */
+    --fb-color-btn-primary-bg: #0f6d6d;
+    --fb-color-btn-primary-bg-hover: #0c5a5a;
+    --fb-color-btn-primary-bg-active: #094848;
+    --fb-color-btn-primary-text: #ffffff;
+    --fb-color-btn-primary-border: transparent;
+
+    --fb-color-btn-accent-bg: #f2600f;
+    --fb-color-btn-accent-bg-hover: #d5530a;
+    --fb-color-btn-accent-bg-active: #d5530a;
+    --fb-color-btn-accent-text: #ffffff;
+    --fb-color-btn-accent-border: transparent;
+
+    --fb-color-btn-secondary-bg: #ffffff;
+    --fb-color-btn-secondary-bg-hover: #eceee9;
+    --fb-color-btn-secondary-bg-active: #eceee9;
+    --fb-color-btn-secondary-text: #1a1f22;
+    --fb-color-btn-secondary-border: #1c2226;
+
+    --fb-color-btn-ghost-bg: transparent;
+    --fb-color-btn-ghost-bg-hover: #eceee9;
+    --fb-color-btn-ghost-bg-active: #eceee9;
+    --fb-color-btn-ghost-text: #1a1f22;
+    --fb-color-btn-ghost-border: transparent;
+
+    --fb-color-btn-danger-bg: #c0392b;
+    --fb-color-btn-danger-bg-hover: #b33528;
+    --fb-color-btn-danger-bg-active: #b33528;
+    --fb-color-btn-danger-text: #ffffff;
+    --fb-color-btn-danger-border: transparent;
+  }
+}
+
+
+/* ── Colours · both themes ─────────────────────────────────────────────────
+ * Deliberately theme-independent: no dark override. */
+@layer theme {
+  [data-flowbuilder-root] {
+    /* The graphite rail stays dark in light mode too — a fixed anchor. */
+    --fb-color-nav-surface: #252c31; /* the active item */
+    --fb-color-nav-text: #eef1f2;
+    --fb-color-nav-text-muted: #9aa6ad;
+    --fb-color-nav-hover: #2f383e;
+    --fb-color-nav-active: #ff6a1a; /* the active item's indicator bar and the brand mark */
+    --fb-color-nav-edge: rgba(0, 0, 0, 0.4); /* the rail's right border */
+
+    /* Backdrop behind the live flow preview, which renders WhatsApp's own
+       white screen whatever the app theme. */
+    --fb-color-preview-backdrop: #ffffff;
+  }
+}
+
+
+/* ── Colours · dark theme ──────────────────────────────────────────────────
+ * The same names as the light block, with their dark values. */
+@layer theme {
+  [data-flowbuilder-root][data-theme='dark'] {
+    --fb-color-canvas: #14181b;
+    --fb-color-surface: #1d2327;
+    --fb-color-surface-raised: #242c31;
+    --fb-color-surface-sunken: #171c1f;
+
+    --fb-border-color-default: #3a444a;
+    --fb-border-color-strong: #e6ebed;
+
+    --fb-text-color-default: #eef1f2;
+    --fb-text-color-muted: #aab4ba;
+    --fb-text-color-subtle: #7e888e;
+
+    --fb-color-nav-bg: #12171a;
+
+    --fb-color-primary: #2aa79b;
+    --fb-color-on-primary: #052322;
+    --fb-color-primary-soft: #183531;
+    --fb-color-accent: #ff7a2e;
+    --fb-color-accent-soft: #3a2415;
+
+    --fb-color-danger: #e5695c;
+    --fb-color-danger-soft: #3a211f;
+    --fb-color-success: #4cb583;
+    --fb-color-success-soft: #172c24;
+    --fb-color-warning: #dba13f;
+    --fb-color-warning-soft: #332813;
+
+    --fb-color-focus-ring: #38b9ac;
+    --fb-color-overlay: rgba(6, 9, 11, 0.66);
+
+    --fb-color-code-bg: #171c1f;
+    --fb-color-code-chrome: #12171a;
+    --fb-color-code-gutter-text: #6b757b;
+    --fb-color-code-gutter-active: #e6ebed;
+    --fb-color-code-line-active: rgba(255, 255, 255, 0.05);
+    --fb-color-code-selection: rgba(42, 167, 155, 0.32);
+    --fb-color-code-key: #5fd3c6;
+    --fb-color-code-string: #ff9d6b;
+    --fb-color-code-number: #7cd6a4;
+    --fb-color-code-literal: #e6b860;
+    --fb-color-code-punctuation: #7e888e;
+    --fb-color-code-match: rgba(255, 122, 46, 0.26);
+    --fb-color-code-match-active: rgba(255, 122, 46, 0.60);
+
+    --fb-color-btn-primary-bg: #2aa79b;
+    --fb-color-btn-primary-bg-hover: #38b9ac;
+    --fb-color-btn-primary-bg-active: #1f8d83;
+    --fb-color-btn-primary-text: #052322;
+    --fb-color-btn-primary-border: transparent;
+
+    --fb-color-btn-accent-bg: #ff7a2e;
+    --fb-color-btn-accent-bg-hover: #ff8f4d;
+    --fb-color-btn-accent-bg-active: #ff8f4d;
+    --fb-color-btn-accent-text: #2a1305;
+    --fb-color-btn-accent-border: transparent;
+
+    --fb-color-btn-secondary-bg: #1d2327;
+    --fb-color-btn-secondary-bg-hover: #171c1f;
+    --fb-color-btn-secondary-bg-active: #171c1f;
+    --fb-color-btn-secondary-text: #eef1f2;
+    --fb-color-btn-secondary-border: #e6ebed;
+
+    --fb-color-btn-ghost-bg: transparent;
+    --fb-color-btn-ghost-bg-hover: #171c1f;
+    --fb-color-btn-ghost-bg-active: #171c1f;
+    --fb-color-btn-ghost-text: #eef1f2;
+    --fb-color-btn-ghost-border: transparent;
+
+    --fb-color-btn-danger-bg: #e5695c;
+    --fb-color-btn-danger-bg-hover: #d56256;
+    --fb-color-btn-danger-bg-active: #d56256;
+    --fb-color-btn-danger-text: #ffffff;
+    --fb-color-btn-danger-border: transparent;
+  }
+}
+
+/* ── Type, shape and motion ────────────────────────────────────────────────
+ * Shared by both themes. Font sizes, the spacing step and the animations are
+ * fixed by the app's layout, so they live in tailwind-theme.css rather than
+ * here; everything below is a brand knob. */
+@layer theme {
+  [data-flowbuilder-root] {
+    /* Everything the app says. */
+    --fb-font-sans: 'FB IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+    /* Everything the machine says: JSON, line numbers, keys, ids. */
+    --fb-font-mono: 'FB IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+
+    /* Corner radii. The app is deliberately sharp; raise these to make the
+       whole app rounder. `rounded-full` (dots, pills) is not a brand knob. */
+    --fb-radius-sm: 2px; /* inner parts: badges, segments, menu options */
+    --fb-radius: 4px; /* the default: controls, buttons, cards, panels, dialogs */
+    --fb-radius-md: 6px; /* loading stand-ins: a phone preview's button, the preview page title */
+    --fb-radius-lg: 8px; /* validation issue cards, the code editor's scrollbar */
+    --fb-radius-xl: 12px; /* loading placeholders for the preview panes */
+    --fb-radius-bubble: 14px; /* chat bubbles; their tail corner uses --fb-radius */
+
+    --fb-shadow-popover: 0 10px 28px rgba(0, 0, 0, 0.22); /* the code editor's find widget */
+    /* Cards and the chat composer: none here, a brand can lift them. */
+    --fb-shadow-card: 0 0 #0000;
+
+    /* Hover and state changes. */
+    --fb-default-transition-duration: 120ms;
+    --fb-default-transition-timing-function: ease;
+  }
+}

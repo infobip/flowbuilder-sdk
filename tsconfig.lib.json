@@ -1,0 +1,16 @@
+{
+  "extends": "./tsconfig.frontend.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "declaration": true,
+    "rootDir": ".",
+    "outDir": "./dist/dts"
+  },
+  "include": [
+    "frontend/flow-builder/public/index.ts",
+    "frontend/flow-builder/element/index.ts",
+    "frontend/flow-builder/element/css.d.ts"
+  ],
+  "exclude": ["node_modules", "dist", "**/*.test.ts"]
+}

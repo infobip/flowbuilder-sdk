@@ -1,0 +1,169 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── Tailwind's view of the theme ──────────────────────────────────────────
+ *
+ * Maps Tailwind's theme names onto the builder's public `--fb-*` tokens
+ * (theme.css). `inline` makes every utility compile to the token itself —
+ * `bg-surface` is `background-color: var(--fb-color-surface)` — and
+ * `reference` keeps Tailwind from declaring its own copies on `:root`, so the
+ * builder adds no custom properties to a host page.
+ *
+ * A new colour, radius or shadow needs a line here as well as its value in
+ * theme.css (and the brands); `npm run test:frontend` checks the two agree.
+ *
+ * Font sizes, the spacing step and the animations are not brand knobs: their
+ * values are written here directly.
+ */
+
+@theme inline reference {
+  --color-*: initial;
+  --font-*: initial;
+  --text-*: initial;
+  --radius-*: initial;
+  --shadow-*: initial;
+  --animate-*: initial;
+
+  /* Colours: surfaces, borders, text, nav, roles, code editor, buttons */
+  --color-canvas: var(--fb-color-canvas);
+  --color-surface: var(--fb-color-surface);
+  --color-surface-raised: var(--fb-color-surface-raised);
+  --color-surface-sunken: var(--fb-color-surface-sunken);
+  --border-color-default: var(--fb-border-color-default);
+  --border-color-strong: var(--fb-border-color-strong);
+  --text-color-default: var(--fb-text-color-default);
+  --text-color-muted: var(--fb-text-color-muted);
+  --text-color-subtle: var(--fb-text-color-subtle);
+  --color-nav-bg: var(--fb-color-nav-bg);
+  --color-primary: var(--fb-color-primary);
+  --color-on-primary: var(--fb-color-on-primary);
+  --color-primary-soft: var(--fb-color-primary-soft);
+  --color-accent: var(--fb-color-accent);
+  --color-accent-soft: var(--fb-color-accent-soft);
+  --color-danger: var(--fb-color-danger);
+  --color-danger-soft: var(--fb-color-danger-soft);
+  --color-success: var(--fb-color-success);
+  --color-success-soft: var(--fb-color-success-soft);
+  --color-warning: var(--fb-color-warning);
+  --color-warning-soft: var(--fb-color-warning-soft);
+  --color-focus-ring: var(--fb-color-focus-ring);
+  --color-overlay: var(--fb-color-overlay);
+  --color-code-bg: var(--fb-color-code-bg);
+  --color-code-chrome: var(--fb-color-code-chrome);
+  --color-code-gutter-text: var(--fb-color-code-gutter-text);
+  --color-code-gutter-active: var(--fb-color-code-gutter-active);
+  --color-code-line-active: var(--fb-color-code-line-active);
+  --color-code-selection: var(--fb-color-code-selection);
+  --color-code-key: var(--fb-color-code-key);
+  --color-code-string: var(--fb-color-code-string);
+  --color-code-number: var(--fb-color-code-number);
+  --color-code-literal: var(--fb-color-code-literal);
+  --color-code-punctuation: var(--fb-color-code-punctuation);
+  --color-code-match: var(--fb-color-code-match);
+  --color-code-match-active: var(--fb-color-code-match-active);
+  --color-btn-primary-bg: var(--fb-color-btn-primary-bg);
+  --color-btn-primary-bg-hover: var(--fb-color-btn-primary-bg-hover);
+  --color-btn-primary-bg-active: var(--fb-color-btn-primary-bg-active);
+  --color-btn-primary-text: var(--fb-color-btn-primary-text);
+  --color-btn-primary-border: var(--fb-color-btn-primary-border);
+  --color-btn-accent-bg: var(--fb-color-btn-accent-bg);
+  --color-btn-accent-bg-hover: var(--fb-color-btn-accent-bg-hover);
+  --color-btn-accent-bg-active: var(--fb-color-btn-accent-bg-active);
+  --color-btn-accent-text: var(--fb-color-btn-accent-text);
+  --color-btn-accent-border: var(--fb-color-btn-accent-border);
+  --color-btn-secondary-bg: var(--fb-color-btn-secondary-bg);
+  --color-btn-secondary-bg-hover: var(--fb-color-btn-secondary-bg-hover);
+  --color-btn-secondary-bg-active: var(--fb-color-btn-secondary-bg-active);
+  --color-btn-secondary-text: var(--fb-color-btn-secondary-text);
+  --color-btn-secondary-border: var(--fb-color-btn-secondary-border);
+  --color-btn-ghost-bg: var(--fb-color-btn-ghost-bg);
+  --color-btn-ghost-bg-hover: var(--fb-color-btn-ghost-bg-hover);
+  --color-btn-ghost-bg-active: var(--fb-color-btn-ghost-bg-active);
+  --color-btn-ghost-text: var(--fb-color-btn-ghost-text);
+  --color-btn-ghost-border: var(--fb-color-btn-ghost-border);
+  --color-btn-danger-bg: var(--fb-color-btn-danger-bg);
+  --color-btn-danger-bg-hover: var(--fb-color-btn-danger-bg-hover);
+  --color-btn-danger-bg-active: var(--fb-color-btn-danger-bg-active);
+  --color-btn-danger-text: var(--fb-color-btn-danger-text);
+  --color-btn-danger-border: var(--fb-color-btn-danger-border);
+  --color-nav-surface: var(--fb-color-nav-surface);
+  --color-nav-text: var(--fb-color-nav-text);
+  --color-nav-text-muted: var(--fb-color-nav-text-muted);
+  --color-nav-hover: var(--fb-color-nav-hover);
+  --color-nav-active: var(--fb-color-nav-active);
+  --color-nav-edge: var(--fb-color-nav-edge);
+  --color-preview-backdrop: var(--fb-color-preview-backdrop);
+
+  --font-sans: var(--fb-font-sans);
+  --font-mono: var(--fb-font-mono);
+
+  /* Font sizes, named by their pixel size (`text-13` is 13px). They set the
+     size only: line height is inherited from the app root (1.45) unless a
+     component sets its own with `leading-*`. */
+  --text-10\.5: 10.5px;
+  --text-11: 11px;
+  --text-11\.5: 11.5px;
+  --text-12: 12px;
+  --text-12\.5: 12.5px;
+  --text-13: 13px;
+  --text-14: 14px;
+  --text-15: 15px;
+  --text-16: 16px;
+  --text-17: 17px;
+  --text-18: 18px;
+  --text-22: 22px;
+  --text-24: 24px;
+  --text-26: 26px;
+  --text-30: 30px;
+  --text-32: 32px;
+
+  --radius-sm: var(--fb-radius-sm);
+  --radius: var(--fb-radius);
+  --radius-md: var(--fb-radius-md);
+  --radius-lg: var(--fb-radius-lg);
+  --radius-xl: var(--fb-radius-xl);
+  --radius-bubble: var(--fb-radius-bubble);
+
+  /* One spacing step is 4px (`p-3` = 12px). Pixels rather than rem, so a
+     browser's default font size doesn't stretch the layout. `min-h-target`
+     is the minimum size of anything clickable. */
+  --spacing: 4px;
+  --spacing-target: 44px;
+
+  /* `shadow-card` resolves to the token, so a brand's shadow reaches it. */
+  --shadow-popover: var(--fb-shadow-popover);
+  --shadow-card: var(--fb-shadow-card);
+
+  --default-transition-duration: var(--fb-default-transition-duration);
+  --default-transition-timing-function: var(--fb-default-transition-timing-function);
+
+  --animate-shimmer: fb-shimmer 1.4s ease infinite;
+  --animate-spin: fb-preview-spin 0.8s linear infinite;
+  --animate-spin-slow: fb-preview-spin 2.4s linear infinite;
+  --animate-typing: fb-typing 1s ease-in-out infinite;
+
+  @keyframes fb-shimmer {
+    0% { background-position: 100% 0; }
+    100% { background-position: 0 0; }
+  }
+  @keyframes fb-preview-spin {
+    to { transform: rotate(360deg); }
+  }
+  @keyframes fb-typing {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+    30% { transform: translateY(-4px); opacity: 1; }
+  }
+}

@@ -1,0 +1,71 @@
+<!doctype html>
+<!--
+  Copyright 2026 INFOBIP
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Flow Builder element: plain HTML host</title>
+    <!-- Aggressive host styles: none of these may reach the builders, and the
+         builders' styles may not change these. -->
+    <style>
+      body { font-family: Georgia, serif; background: #fffbe6; margin: 16px; }
+      h1 { color: hotpink; font-size: 40px; text-transform: uppercase; }
+      button { background: lime; color: purple; border: 4px dashed red; font-size: 22px; padding: 12px; }
+      ul { list-style: square; background: #def; padding: 24px; }
+      li { color: crimson; margin: 8px; }
+      * { letter-spacing: 3px; word-spacing: 4px; font-style: italic; text-transform: uppercase; text-shadow: 1px 1px 0 crimson; text-indent: 6px; text-align: right; white-space: pre; cursor: crosshair; font-variant: small-caps; text-decoration: underline red 3px; color: hotpink; font-family: Georgia, serif; font-size: 22px; font-weight: 900; line-height: 3; }
+      .row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+      .host { height: 640px; border: 3px solid black; margin-bottom: 16px; }
+    </style>
+    <!-- Served by examples/express-host at /html/. The standalone script
+         (React inlined) and its fonts come from the host's own origin. -->
+    <script type="module" src="/vendor/flowbuilder/standalone.js"></script>
+  </head>
+  <body>
+    <h1>Host page heading</h1>
+    <button>Host button</button>
+    <ul><li>Host list item one</li><li>Host list item two</li></ul>
+    <div class="row">
+      <div class="host">
+        <infobip-flow-builder id="a" api-base-url="/flowbuilder/api" theme-mode="light" storage-key="demo-a"></infobip-flow-builder>
+      </div>
+      <div class="host">
+        <infobip-flow-builder id="b" api-base-url="/flowbuilder/api" theme-mode="dark" storage-key="demo-b"></infobip-flow-builder>
+      </div>
+    </div>
+    <h2>German, partial messages</h2>
+    <div class="host">
+      <infobip-flow-builder id="c" api-base-url="/flowbuilder/api" locale="de" storage-key="demo-c"></infobip-flow-builder>
+    </div>
+    <script type="module">
+      const [a, b, c] = ['a', 'b', 'c'].map((id) => document.getElementById(id));
+      a.brand = { productName: 'Demo Host' };
+      b.brand = { productName: 'Demo Host' };
+      a.theme = { tokens: { colorAccent: '#5b3cc4' } };
+      // Anything not listed falls back to English.
+      c.messages = {
+        common: { productName: 'Acme Flows', nav: { library: 'Flow-Bibliothek', newFlow: 'Neuer Flow', settings: 'Einstellungen' } },
+        library: { header: { title: 'Flow-Bibliothek', createFlow: 'Flow erstellen' }, actions: { edit: 'Bearbeiten', delete: 'Löschen' } },
+      };
+      for (const el of [a, b, c]) {
+        for (const type of ['created', 'saved', 'published', 'deleted', 'error', 'navigate']) {
+          el.addEventListener('flowbuilder:' + type, (e) => console.log(el.id, e.type, JSON.stringify(e.detail)));
+        }
+      }
+    </script>
+  </body>
+</html>

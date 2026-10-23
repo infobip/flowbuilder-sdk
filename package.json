@@ -1,0 +1,92 @@
+{
+  "name": "@infobip/flowbuilder-sdk",
+  "version": "1.0.0-rc.1",
+  "description": "AI Flow Builder: generate, edit, preview and publish WhatsApp Flows through the Infobip API",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/dts/frontend/flow-builder/public/index.d.ts",
+      "import": "./dist/react/index.js"
+    },
+    "./element": {
+      "types": "./dist/dts/frontend/flow-builder/element/index.d.ts",
+      "import": "./dist/element/index.js"
+    },
+    "./element/standalone": {
+      "types": "./dist/dts/frontend/flow-builder/element/index.d.ts",
+      "import": "./dist/element/standalone.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "import": "./dist/server/index.js"
+    },
+    "./server/express": {
+      "types": "./dist/server/express.d.ts",
+      "import": "./dist/server/express.js"
+    },
+    "./styles.css": "./dist/styles.css",
+    "./fonts/*": "./dist/fonts/*",
+    "./package.json": "./package.json"
+  },
+  "sideEffects": [
+    "**/*.css",
+    "./dist/element/standalone.js"
+  ],
+  "scripts": {
+    "prestart": "npm run build:server && npm run build:frontend",
+    "start": "node server.js",
+    "generate-cert": "mkdir -p certs && openssl req -x509 -newkey rsa:2048 -keyout certs/key.pem -out certs/cert.pem -days 365 -nodes -subj '/CN=localhost' -addext 'subjectAltName=DNS:localhost,IP:127.0.0.1'",
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
+    "build": "npm run clean && tsc && npm run build:server && npm run build:frontend && npm run build:lib && node scripts/build-element.mjs",
+    "build:server": "tsc -p tsconfig.server.json",
+    "build:frontend": "tailwindcss -i frontend/flow-builder/styles/app.css -o frontend/app.css --minify && esbuild frontend/main.tsx --bundle --outfile=frontend/app.js --format=esm --minify --sourcemap --define:process.env.NODE_ENV='\"production\"'",
+    "build:lib": "node scripts/build-lib.mjs && tsc -p tsconfig.lib.json",
+    "build:element": "npm run build:lib && node scripts/build-element.mjs",
+    "check:size": "node scripts/check-size.mjs",
+    "dev:frontend": "node scripts/dev-frontend.mjs",
+    "typecheck": "tsc --noEmit",
+    "typecheck:frontend": "tsc --noEmit -p tsconfig.frontend.json",
+    "typecheck:server": "tsc --noEmit -p tsconfig.server.json",
+    "test:frontend": "node scripts/run-frontend-tests.mjs",
+    "dev": "tsc --watch",
+    "examples:prepare": "npm run build && node scripts/link-examples.mjs",
+    "examples:verify": "node examples/verify.mjs"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
+    "compression": "^1.8.1",
+    "dotenv": "^17.4.2",
+    "esbuild": "^0.24.2",
+    "express": "^5.2.1",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.5.0"
+  },
+  "peerDependencies": {
+    "express": "^4.18.0 || ^5.0.0",
+    "react": "^18.3.0 || ^19.0.0",
+    "react-dom": "^18.3.0 || ^19.0.0"
+  },
+  "peerDependenciesMeta": {
+    "express": {
+      "optional": true
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "CHANGELOG.md",
+    "LICENSE",
+    "NOTICE"
+  ],
+  "license": "Apache-2.0"
+}

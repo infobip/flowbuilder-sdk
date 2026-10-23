@@ -1,0 +1,41 @@
+<!doctype html>
+<!--
+  Copyright 2026 INFOBIP
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Flow Builder</title>
+    <link rel="icon" type="image/svg+xml" href="/frontend/assets/sparkle-mark.svg" />
+    <link rel="apple-touch-icon" href="/frontend/assets/sparkle-mark.svg" />
+    <!-- Faces are declared in the app's stylesheet (styles/fonts.css);
+         preloading the two that render first keeps text from flashing a fallback. -->
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/frontend/assets/fonts/IBMPlexSans-latin.woff2" />
+    <link rel="preload" as="font" type="font/woff2" crossorigin href="/frontend/assets/fonts/IBMPlexMono-400-latin.woff2" />
+    <!-- Built by `npm run build:frontend` from flow-builder/styles/app.css. -->
+    <link rel="stylesheet" href="/frontend/app.css" />
+    <!-- The app's stylesheet only styles the builder, never the page around it,
+         so this page — like any host — sets its own page-level basics. -->
+    <style>
+      body { margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/frontend/app.js"></script>
+  </body>
+</html>

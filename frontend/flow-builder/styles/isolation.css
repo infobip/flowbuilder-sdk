@@ -1,0 +1,182 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── Text isolation from the host page ─────────────────────────────────────
+ *
+ * Preflight scopes the reset *to* the builder; this keeps the host's text
+ * styles *out*. Two routes let them in, and both only matter in the React
+ * (non-Shadow-DOM) embed. The element's mount div sets `all: initial`, so a
+ * Shadow DOM host is already clean.
+ *
+ *  1. Inheritance. Text properties inherit, and the root only sets some of
+ *     them, so a host's `letter-spacing`, `text-transform`, `white-space`, …
+ *     on an ancestor flows through. The root rule below gives each one a
+ *     defined value.
+ *  2. A host's universal rule. `* { letter-spacing: 2px }` (specificity 0)
+ *     applies straight to every builder element, and a direct match beats
+ *     inheritance for any property the element doesn't set itself. The second
+ *     rule makes every builder element inherit these properties from its
+ *     parent, so the root's values reach everywhere. At (0,1,0) it also beats
+ *     a host element selector like `p {}` (0,0,1).
+ *
+ * Why lists rather than `all: initial` / `all: revert-layer` on the root: `all`
+ * also resets `display`, `container` and `position`, so it would have to be
+ * undone rule by rule, and a blanket `inherit` for every property would
+ * override the builder's own non-inherited ones.
+ * Why this is safe: the builder's utilities and component rules carry the root
+ * attribute plus a class or element, (0,1,1) or more, so they still win over
+ * the `inherit` below; it is only the fallback. The third block puts back the
+ * browser defaults `inherit` would otherwise erase (italic `em`, bold `th`, …).
+ *
+ *  3. Decoration propagation. A host's `text-decoration` on an ancestor is
+ *     not inherited but drawn through every in-flow descendant, whatever
+ *     their own `text-decoration` says. Only an atomic inline (inline-block),
+ *     a float or an out-of-flow box in between stops it. So the root's one
+ *     child, `[data-fb-frame]` (FlowBuilderRoot), is an inline-block at full
+ *     width. Dialogs portal into the root beside it, but they're `fixed` or
+ *     `absolute`, which stops it too. The root's own text rules (zero indent,
+ *     start alignment, its line height) keep the frame's line exactly as tall
+ *     as the frame, with no offset.
+ *
+ * Left alone on purpose: `direction` and `unicode-bidi` (a host's
+ * `dir="rtl"` should reach the builder), and `visibility` (a host hiding a
+ * container should hide the builder). Not text, so not covered: a host `*`
+ * rule on opacity, filter, transform and the like.
+ */
+
+[data-flowbuilder-root] {
+  letter-spacing: normal;
+  word-spacing: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-stretch: normal;
+  font-kerning: auto;
+  font-feature-settings: normal;
+  font-variation-settings: normal;
+  font-synthesis: weight style small-caps;
+  font-optical-sizing: auto;
+  text-transform: none;
+  text-shadow: none;
+  text-indent: 0;
+  text-align: start;
+  text-align-last: auto;
+  text-justify: auto;
+  text-rendering: auto;
+  text-wrap: wrap;
+  text-emphasis: none;
+  text-decoration: none;
+  -webkit-text-stroke: 0 currentcolor;
+  white-space: normal;
+  word-break: normal;
+  overflow-wrap: normal;
+  line-break: auto;
+  hyphens: manual;
+  quotes: auto;
+  tab-size: 4;
+  list-style: disc outside none;
+  cursor: auto;
+  caret-color: auto;
+  writing-mode: horizontal-tb;
+}
+
+[data-flowbuilder-root] > [data-fb-frame] {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+}
+
+[data-flowbuilder-root] * {
+  letter-spacing: inherit;
+  word-spacing: inherit;
+  font-style: inherit;
+  font-variant: inherit;
+  font-stretch: inherit;
+  font-kerning: inherit;
+  font-feature-settings: inherit;
+  font-variation-settings: inherit;
+  font-synthesis: inherit;
+  font-optical-sizing: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  color: inherit;
+  text-transform: inherit;
+  text-shadow: inherit;
+  text-indent: inherit;
+  text-align: inherit;
+  text-align-last: inherit;
+  text-justify: inherit;
+  text-rendering: inherit;
+  text-wrap: inherit;
+  text-emphasis: inherit;
+  -webkit-text-stroke: inherit;
+  /* Not inherited, but a host `*` rule reaches it all the same. A decoration
+     on an ancestor still paints through its children. */
+  text-decoration: none;
+  white-space: inherit;
+  word-break: inherit;
+  overflow-wrap: inherit;
+  line-break: inherit;
+  hyphens: inherit;
+  quotes: inherit;
+  tab-size: inherit;
+  list-style: inherit;
+  cursor: inherit;
+  caret-color: inherit;
+  writing-mode: inherit;
+}
+
+/* Browser defaults the rule above would erase (an author rule beats the user
+   agent's). Each is one element name, so (0,1,1) beats it. */
+[data-flowbuilder-root] :is(em, i, cite, dfn, var, address) {
+  font-style: italic;
+}
+[data-flowbuilder-root] th {
+  font-weight: bold;
+}
+[data-flowbuilder-root] :is(th, caption, button, input:where([type='button'], [type='submit'], [type='reset'])) {
+  text-align: center;
+}
+[data-flowbuilder-root] :is(u, ins) {
+  text-decoration: underline;
+}
+[data-flowbuilder-root] :is(s, del, strike) {
+  text-decoration: line-through;
+}
+[data-flowbuilder-root] pre {
+  white-space: pre;
+}
+[data-flowbuilder-root] textarea {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+[data-flowbuilder-root] input:where([type='checkbox'], [type='radio'], [type='file']) {
+  white-space: pre;
+  cursor: default;
+}
+[data-flowbuilder-root] label {
+  cursor: default;
+}
+[data-flowbuilder-root] a:any-link {
+  cursor: pointer;
+}
+[data-flowbuilder-root] :is(textarea, input:where(:not([type='button'], [type='submit'], [type='reset'], [type='checkbox'], [type='radio'], [type='range'], [type='file'], [type='color'], [type='image']))) {
+  cursor: text;
+}
+[data-flowbuilder-root] :is(input, textarea, select, button):disabled {
+  cursor: default;
+}
