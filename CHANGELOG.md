@@ -2,9 +2,9 @@
 
 All notable changes to `@infobip/flowbuilder-sdk` are listed here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project follows [Semantic Versioning](https://semver.org/).
 
-## [1.0.0-rc.1]
+## [1.0.0] - 2026-10-26
 
-First release candidate: the Flow Builder can be embedded in your own application.
+First stable release: the Flow Builder can be embedded in your own application.
 
 ### Added
 

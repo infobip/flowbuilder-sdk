@@ -322,7 +322,7 @@ test('every var() in the stylesheets and components is defined', () => {
 });
 
 // Colours belong in theme.css so a rebrand is one file. The WhatsApp preview
-// keeps its own fixed palette in whatsapp-flow-preview/styles.ts, by design.
+// keeps its own fixed palette in whatsapp-flow-preview/preview.css, by design.
 test('no source or app.css rule hard-codes a colour', () => {
   const LITERAL = /#(?:[0-9a-f]{8}|[0-9a-f]{6}|[0-9a-f]{3,4})\b|\b(?:rgba?|hsla?|hwb|lab|lch|oklab|oklch|color|color-mix)\(/gi;
   const scanned = [

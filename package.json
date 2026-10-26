@@ -1,6 +1,6 @@
 {
   "name": "@infobip/flowbuilder-sdk",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "description": "AI Flow Builder: generate, edit, preview and publish WhatsApp Flows through the Infobip API",
   "type": "module",
   "main": "./dist/index.js",
@@ -88,5 +88,16 @@
     "LICENSE",
     "NOTICE"
   ],
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/infobip/flowbuilder-sdk.git"
+  },
+  "homepage": "https://github.com/infobip/flowbuilder-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/infobip/flowbuilder-sdk/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
 }
