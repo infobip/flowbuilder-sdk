@@ -53,6 +53,7 @@
 @import './preflight.css';
 @import './isolation.css';
 @import './theme.css';
+@import './brands/indigo.css';
 @import '../whatsapp-flow-preview/preview.css';
 
 /* Only the app's own sources may add classes, so stray HTML elsewhere in the

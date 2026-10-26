@@ -1,0 +1,209 @@
+/*
+ * Copyright 2026 INFOBIP
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* ── Brand: Indigo ─────────────────────────────────────────────────────────
+ *
+ * A reference brand: a complete second look layered over theme.css for
+ * [data-brand="indigo"] on the app root (Settings → Appearance → Brand picks
+ * it). It is deliberately far from the default teal-and-orange look — and not
+ * only in colour: Indigo speaks in monospace, rounds what the default keeps
+ * sharp, replaces the default's near-black outlines with soft slate-indigo
+ * ones, turns outlined secondary buttons into soft-filled chips, lifts its
+ * cards off the canvas and moves more slowly — so the file shows what a brand
+ * file has to carry:
+ *
+ *   - every colour theme.css defines, in BOTH the light and the dark block.
+ *     A colour skipped here shows the default look through, and a light value
+ *     without its dark twin ties with theme.css's dark block on specificity,
+ *     leaving source order to decide dark mode. npm run test:frontend checks.
+ *   - the both-themes tokens (the rail, the preview backdrop) as well; they
+ *     are colours too. Here they read on the navy rail in either mode, so
+ *     both blocks hold the same values.
+ *   - the non-colour brand knobs — type, corner radii, depth, motion — after
+ *     the colours in the light block. They are theme-independent, so one copy
+ *     serves both modes and the dark block stays exactly the colour set.
+ *   - only names theme.css defines, and nothing outside --fb-*; no
+ *     conditional at-rules, no selectors beyond the root pair below.
+ *   - status tones keep the default semantics on purpose: a rebrand recolors
+ *     the brand, not the meaning of danger, success or warning.
+ *
+ * Like the default look, the WhatsApp phone preview keeps its fixed palette.
+ */
+
+@layer theme {
+  [data-flowbuilder-root][data-brand='indigo'] {
+    --fb-color-canvas: #f2f3f8;
+    --fb-color-surface: #ffffff;
+    --fb-color-surface-raised: #ffffff;
+    --fb-color-surface-sunken: #e8eaf3;
+    --fb-border-color-default: #cdd2e8;
+    --fb-border-color-strong: #5a6390;
+    --fb-text-color-default: #191d33;
+    --fb-text-color-muted: #4f5570;
+    --fb-text-color-subtle: #7d8299;
+    --fb-color-nav-bg: #141a33;
+    --fb-color-primary: #3d4db0;
+    --fb-color-on-primary: #ffffff;
+    --fb-color-primary-soft: #e4e7f7;
+    --fb-color-accent: #d1366e;
+    --fb-color-accent-soft: #f9e2ec;
+    --fb-color-danger: #c0392b;
+    --fb-color-danger-soft: #fbe5e2;
+    --fb-color-success: #1f7a4d;
+    --fb-color-success-soft: #e0f0e7;
+    --fb-color-warning: #b5730a;
+    --fb-color-warning-soft: #fbeed6;
+    --fb-color-focus-ring: #3d4db0;
+    --fb-color-overlay: rgba(15, 19, 38, 0.55);
+    --fb-color-code-bg: #ffffff;
+    --fb-color-code-chrome: #e8eaf3;
+    --fb-color-code-gutter-text: #9aa0b4;
+    --fb-color-code-gutter-active: #191d33;
+    --fb-color-code-line-active: #eef0f8;
+    --fb-color-code-selection: rgba(61, 77, 176, 0.20);
+    --fb-color-code-key: #3d4db0;
+    --fb-color-code-string: #b0305f;
+    --fb-color-code-number: #1f7a4d;
+    --fb-color-code-literal: #8a5a00;
+    --fb-color-code-punctuation: #8f94a6;
+    --fb-color-code-match: rgba(209, 54, 110, 0.22);
+    --fb-color-code-match-active: rgba(209, 54, 110, 0.55);
+    --fb-color-btn-primary-bg: #3d4db0;
+    --fb-color-btn-primary-bg-hover: #33419a;
+    --fb-color-btn-primary-bg-active: #2a3584;
+    --fb-color-btn-primary-text: #ffffff;
+    --fb-color-btn-primary-border: transparent;
+    --fb-color-btn-accent-bg: #d1366e;
+    --fb-color-btn-accent-bg-hover: #bb2c60;
+    --fb-color-btn-accent-bg-active: #a52452;
+    --fb-color-btn-accent-text: #ffffff;
+    --fb-color-btn-accent-border: transparent;
+    --fb-color-btn-secondary-bg: #eef0fa;
+    --fb-color-btn-secondary-bg-hover: #e3e7f7;
+    --fb-color-btn-secondary-bg-active: #dde2f5;
+    --fb-color-btn-secondary-text: #191d33;
+    --fb-color-btn-secondary-border: transparent;
+    --fb-color-btn-ghost-bg: transparent;
+    --fb-color-btn-ghost-bg-hover: #e8eaf3;
+    --fb-color-btn-ghost-bg-active: #e8eaf3;
+    --fb-color-btn-ghost-text: #191d33;
+    --fb-color-btn-ghost-border: transparent;
+    --fb-color-btn-danger-bg: #c0392b;
+    --fb-color-btn-danger-bg-hover: #b33528;
+    --fb-color-btn-danger-bg-active: #b33528;
+    --fb-color-btn-danger-text: #ffffff;
+    --fb-color-btn-danger-border: transparent;
+
+    /* Both themes: the navy rail and the preview backdrop. */
+    --fb-color-nav-surface: #232c52;
+    --fb-color-nav-text: #eef0fa;
+    --fb-color-nav-text-muted: #99a1bd;
+    --fb-color-nav-hover: #2c375f;
+    --fb-color-nav-active: #ff5c8a;
+    --fb-color-nav-edge: rgba(0, 0, 0, 0.4);
+    --fb-color-preview-backdrop: #ffffff;
+
+    /* Type, shape, depth and motion. Theme-independent, so the light block
+       carries them once. This is the part that makes Indigo a different look
+       rather than a different palette. */
+    --fb-font-sans: 'FB IBM Plex Mono', ui-monospace, 'SFMono-Regular', 'Menlo', 'Consolas', monospace;
+    --fb-radius-sm: 8px;
+    --fb-radius: 16px;
+    --fb-radius-md: 18px;
+    --fb-radius-lg: 22px;
+    --fb-radius-xl: 26px;
+    --fb-radius-bubble: 30px;
+    --fb-shadow-popover: 0 14px 36px rgba(10, 14, 34, 0.24);
+    --fb-shadow-card: 0 1px 2px rgba(10, 14, 34, 0.08), 0 10px 24px rgba(10, 14, 34, 0.14);
+    --fb-default-transition-duration: 180ms;
+    --fb-default-transition-timing-function: cubic-bezier(0.22, 0.8, 0.36, 1);
+  }
+}
+
+@layer theme {
+  [data-flowbuilder-root][data-brand='indigo'][data-theme='dark'] {
+    --fb-color-canvas: #101322;
+    --fb-color-surface: #181c30;
+    --fb-color-surface-raised: #202542;
+    --fb-color-surface-sunken: #14172a;
+    --fb-border-color-default: #454e7a;
+    --fb-border-color-strong: #aab2dd;
+    --fb-text-color-default: #eef0fa;
+    --fb-text-color-muted: #a7adc7;
+    --fb-text-color-subtle: #7c829e;
+    --fb-color-nav-bg: #0c0f1d;
+    --fb-color-primary: #7d8ce6;
+    --fb-color-on-primary: #0e1330;
+    --fb-color-primary-soft: #262c4e;
+    --fb-color-accent: #ff6e9c;
+    --fb-color-accent-soft: #3a1e2c;
+    --fb-color-danger: #e5695c;
+    --fb-color-danger-soft: #3a211f;
+    --fb-color-success: #4cb583;
+    --fb-color-success-soft: #172c24;
+    --fb-color-warning: #dba13f;
+    --fb-color-warning-soft: #332813;
+    --fb-color-focus-ring: #8f9ded;
+    --fb-color-overlay: rgba(5, 7, 16, 0.66);
+    --fb-color-code-bg: #14172a;
+    --fb-color-code-chrome: #0c0f1d;
+    --fb-color-code-gutter-text: #6a7089;
+    --fb-color-code-gutter-active: #e2e5f2;
+    --fb-color-code-line-active: rgba(255, 255, 255, 0.05);
+    --fb-color-code-selection: rgba(125, 140, 230, 0.32);
+    --fb-color-code-key: #a3b0f5;
+    --fb-color-code-string: #ff9db8;
+    --fb-color-code-number: #7cd6a4;
+    --fb-color-code-literal: #e6b860;
+    --fb-color-code-punctuation: #7c829e;
+    --fb-color-code-match: rgba(255, 110, 156, 0.26);
+    --fb-color-code-match-active: rgba(255, 110, 156, 0.60);
+    --fb-color-btn-primary-bg: #7d8ce6;
+    --fb-color-btn-primary-bg-hover: #8f9ded;
+    --fb-color-btn-primary-bg-active: #6675d1;
+    --fb-color-btn-primary-text: #0e1330;
+    --fb-color-btn-primary-border: transparent;
+    --fb-color-btn-accent-bg: #ff6e9c;
+    --fb-color-btn-accent-bg-hover: #ff86ac;
+    --fb-color-btn-accent-bg-active: #e55a86;
+    --fb-color-btn-accent-text: #33101d;
+    --fb-color-btn-accent-border: transparent;
+    --fb-color-btn-secondary-bg: #202542;
+    --fb-color-btn-secondary-bg-hover: #262c4e;
+    --fb-color-btn-secondary-bg-active: #262c4e;
+    --fb-color-btn-secondary-text: #eef0fa;
+    --fb-color-btn-secondary-border: transparent;
+    --fb-color-btn-ghost-bg: transparent;
+    --fb-color-btn-ghost-bg-hover: #14172a;
+    --fb-color-btn-ghost-bg-active: #14172a;
+    --fb-color-btn-ghost-text: #eef0fa;
+    --fb-color-btn-ghost-border: transparent;
+    --fb-color-btn-danger-bg: #e5695c;
+    --fb-color-btn-danger-bg-hover: #d56256;
+    --fb-color-btn-danger-bg-active: #d56256;
+    --fb-color-btn-danger-text: #ffffff;
+    --fb-color-btn-danger-border: transparent;
+
+    /* Both themes again: the test asks every block for every colour. */
+    --fb-color-nav-surface: #232c52;
+    --fb-color-nav-text: #eef0fa;
+    --fb-color-nav-text-muted: #99a1bd;
+    --fb-color-nav-hover: #2c375f;
+    --fb-color-nav-active: #ff5c8a;
+    --fb-color-nav-edge: rgba(0, 0, 0, 0.4);
+    --fb-color-preview-backdrop: #ffffff;
+  }
+}

@@ -23,7 +23,7 @@ export type ThemeName = 'light' | 'dark';
 
 /** The looks the app can wear. `default` is theme.css alone; each other brand
  *  layers `styles/brands/<name>.css` over it. */
-export const BRANDS = ['default'] as const;
+export const BRANDS = ['default', 'indigo'] as const;
 export type BrandName = (typeof BRANDS)[number];
 
 // Editor metrics live in TS because the gutter, the highlight layer and the

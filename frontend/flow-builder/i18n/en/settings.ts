@@ -48,6 +48,7 @@ export const settings = {
       // Proper nouns, but keyed so a host can rename them.
       names: {
         default: 'AI Flow Builder',
+        indigo: 'Indigo',
       },
     },
   },

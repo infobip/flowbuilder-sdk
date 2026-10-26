@@ -12,6 +12,8 @@ frontend/
   index.html              - The one page the server serves
   flow-builder/           - The app
     app/                  - Entry point, app shell and router
+    public/               - Public React entry: FlowBuilder, FlowBuilderProvider, FlowLibrary, FlowEditor, FlowPreview, routers, storage adapters
+    element/              - The <infobip-flow-builder> web component
     pages/                - Library, editor, preview and settings pages
     features/             - Editor and library UI
     components/           - Shared UI primitives
@@ -19,7 +21,8 @@ frontend/
     services/             - Chat history, flow JSON cache, live preview and API-key services
     types/                - Shared domain type re-exports
     utils/                - Helpers, including the hash router
-    styles/               - Tailwind entry (app.css), default theme (theme.css: the --fb-* tokens), Tailwind mapping (tailwind-theme.css), scoped reset (preflight.css), fonts and other brands (brands/)
+    i18n/                 - Locale, message overrides, validation and error text
+    styles/               - Tailwind entry (app.css), default theme (theme.css: the --fb-* tokens), Tailwind mapping (tailwind-theme.css), scoped reset (preflight.css) and fonts
     whatsapp-flow-preview/ - In-browser WhatsApp phone preview
   api.ts, services/whatsappFlows.ts - HTTP service layer for the flow routes (under `apiBaseUrl`, default `/api`)
   shared.ts, flowJsonDraft.ts       - Domain helpers shared across the app
@@ -49,12 +52,13 @@ tsconfig.lib.json         - Emits the `.d.ts` files of the React and element ent
 - `npm run build:lib` — Library only: `dist/react/`, `dist/styles.css`, `dist/fonts/` and the `.d.ts` files in `dist/dts/`
 - `npm run build:element` — Library, then the web component in `dist/element/`
 - `npm run check:size` — Fail if a built bundle is over its gzip budget (run after `npm run build`)
+- `npm run examples:prepare` — Build, pack and install the package into `examples/`; `npm run examples:verify` then drives the example pages in headless Chromium (needs `playwright-core` installed separately)
 
 ## Rules for Contributing
 
 - Components and hooks never call `fetch` or the Infobip API directly; HTTP goes through the service layer to the flow routes (`server/core.ts`). Service paths are relative to `apiBaseUrl` (default `/api`); never hard-code `/api`
 - Flow routes live in `server/core.ts` and keep their paths and JSON shapes, because the frontend depends on them. `server.js` only hosts them; the API-key override endpoints stay there and never go into `server/`
-- Style with Tailwind utilities; colours, fonts and radii live as `--fb-*` tokens in `frontend/flow-builder/styles/theme.css` (each mapped for Tailwind in `tailwind-theme.css`), and alternative brands override them in `styles/brands/` (see "Rebranding the frontend" in the README)
+- Style with Tailwind utilities; colours, fonts and radii live as `--fb-*` tokens in `frontend/flow-builder/styles/theme.css` (each mapped for Tailwind in `tailwind-theme.css`), and each brand preset overrides them in its own file under `styles/brands/` (see "Adding a preset" in the README)
 - CSS must never reach outside `[data-flowbuilder-root]`: the builder is embedded in other people's pages. No global selectors, no variables on `:root`; prefix keyframes `fb-` and font families `FB `
 - Keep WhatsApp Flow JSON types in `src/types/` and validation rules in `src/validators/`
 

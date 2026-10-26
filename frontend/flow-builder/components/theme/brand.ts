@@ -27,6 +27,7 @@ export function parseBrand(value: string | null | undefined): BrandName {
 /** The message key for what Settings calls each brand (proper nouns a host may rename). */
 export const BRAND_LABEL_KEYS: Record<BrandName, MessageKey> = {
   default: 'settings.appearance.brand.names.default',
+  indigo: 'settings.appearance.brand.names.indigo',
 };
 
 /**
@@ -35,4 +36,5 @@ export const BRAND_LABEL_KEYS: Record<BrandName, MessageKey> = {
  */
 export const BRAND_ICONS: Record<BrandName, string> = {
   default: '/frontend/assets/sparkle-mark.svg',
+  indigo: '/frontend/assets/indigo-mark.svg',
 };

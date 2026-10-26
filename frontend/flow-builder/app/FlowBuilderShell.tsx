@@ -63,14 +63,26 @@ function SparkleMark() {
   );
 }
 
-// Brand lockup: sparkle mark + wordmark + product scope. Tuned for the graphite
+// Faceted gem, the indigo brand's mark. Same role as the sparkle: it takes the
+// rail's active colour, which the brand file sets to its own accent.
+function GemMark() {
+  return (
+    // -mt-px: optical alignment with the wordmark's cap height.
+    <svg className="size-6.5 flex-none -mt-px text-nav-active" viewBox="0 0 24 24" focusable="false" aria-hidden="true">
+      <path fill="currentColor" d="M4 9 8.5 3.5h7L20 9Z" />
+      <path fill="currentColor" opacity="0.55" d="M4 9h16L12 21.5Z" />
+    </svg>
+  );
+}
+
+// Brand lockup: brand mark + wordmark + product scope. Tuned for the graphite
 // rail — it reads as white text on dark and would wash out on light surfaces.
 type LockupProps = { productName: string; tagline: string };
 
-function BrandLogo({ productName, tagline }: LockupProps) {
+function Lockup({ mark, productName, tagline }: { mark: React.ReactNode } & LockupProps) {
   return (
     <div className="flex min-w-0 items-start gap-2.5">
-      <SparkleMark />
+      {mark}
       <span className="flex min-w-0 flex-col gap-0.5">
         <span className="text-15 font-semibold uppercase leading-[1.15] tracking-[0.06em] text-nav-text">{productName}</span>
         {/* Wider than the rail's text column, so it always wraps — balancing
@@ -81,9 +93,18 @@ function BrandLogo({ productName, tagline }: LockupProps) {
   );
 }
 
+function BrandLogo({ productName, tagline }: LockupProps) {
+  return <Lockup mark={<SparkleMark />} productName={productName} tagline={tagline} />;
+}
+
+function IndigoLogo({ productName, tagline }: LockupProps) {
+  return <Lockup mark={<GemMark />} productName={productName} tagline={tagline} />;
+}
+
 // One lockup per brand, so a new brand without one is a compile error.
 const BRAND_LOGOS: Record<BrandName, React.ComponentType<LockupProps>> = {
   default: BrandLogo,
+  indigo: IndigoLogo,
 };
 
 // App chrome: navigation rail + content column. The rail's active item carries

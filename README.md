@@ -102,14 +102,14 @@ The builder fills its container, so give the container a height. Every other pro
 | `fetch` | `typeof fetch` | global `fetch` | Replaces `fetch`, for example with an authenticated client. |
 | `credentials` | `RequestCredentials` | `same-origin` | Use `'include'` for a cross-origin API that uses cookies. |
 | `onUnauthorized` | `() => void` | none | Called when a request answers `401`. Use it to send the user to your login page. |
-| `theme` | `FlowBuilderTheme` | none | `{ mode, tokens, darkTokens }`. See [Theming](#theming). |
+| `theme` | `FlowBuilderTheme` | none | `{ mode, preset, tokens, darkTokens }`. See [Theming](#theming). |
 | `features` | `FlowBuilderFeatures` | all on | Hides parts of the UI. See [Theming](#theming). |
 | `locale`, `messages` | | | See [Internationalisation](#internationalisation). |
 | `layout` | `'fill' \| 'page'` | `'fill'` | `fill` fills the container; `page` grows with its content. See [Whole-page layout](#whole-page-layout). |
-| `routing` | `'memory' \| 'hash'` | `'memory'` | `hash` keeps the current screen in the URL. |
+| `routing` | `'memory' \| 'hash' \| Router` | `'memory'` | `hash` keeps the current screen in the URL. A custom `Router` object replaces it. |
 | `onFlowCreated`, `onFlowSaved`, `onFlowPublished`, `onFlowDeleted`, `onError` | callbacks | none | Lifecycle events. |
 
-For composing your own screens from the library, editor and preview pieces (with React Router, custom storage or an unsaved-changes guard), use `<FlowBuilderProvider>` together with `<FlowLibrary>`, `<FlowEditor>` and `<FlowPreview>`, all exported from `@infobip/flowbuilder-sdk/react`.
+For composing your own screens from the library, editor and preview pieces (with React Router, custom storage or an unsaved-changes guard), use `<FlowBuilderProvider>` together with `<FlowLibrary>`, `<FlowEditor>` and `<FlowPreview>`, all exported from `@infobip/flowbuilder-sdk/react`. The same entry exports `createHashRouter`, `createMemoryRouter`, `createLocalStorageAdapter`, `createMemoryStorageAdapter` and `FlowBuilderApiError`.
 
 ## Web component
 
@@ -206,6 +206,7 @@ Options:
 | `bodyLimit` | `number \| string` | `5mb` | Largest request body. Larger gives `413 PAYLOAD_TOO_LARGE`. |
 | `exposeUpstreamErrors` | `boolean` | `false` | Adds Infobip's raw error body as `detail` to error responses. Leave off in production. |
 | `fetch` | `typeof fetch` | global `fetch` | Used for calls to Infobip (proxy, tests, tracing). |
+| `saveRetryDelays` | `readonly number[]` | `[1000, 2000, 3000, 5000, 8000, 8000]` | Milliseconds to wait between retries of the flow JSON upload in `POST /save-flow`. Infobip answers `404` for a while after a flow is created, while it indexes it. |
 | `allowedDownloadHosts` | `readonly string[]` | `baseUrl` host, `*.infobip.com`, `*.whatsapp.net`, `*.fbcdn.net` | Hosts the flow JSON may be downloaded from. Supplying it replaces the whole default list, so include every host you need. |
 
 You must give `apiKey` or `getApiKey`, and `sender` or `getSender`. The factory throws a `TypeError` at construction if one is missing, and also if `authorize` is missing.
@@ -234,7 +235,7 @@ createFlowBuilderRouter({
 
 `getApiKey` and `getSender` run after `authorize` has passed, on each request. If `getApiKey` returns an empty value, the request fails with `500 CONFIGURATION_ERROR`. If users switch tenants in one browser tab, give each tenant its own browser storage namespace (the `storage-key` attribute on the web component).
 
-**Routes.** The flow routes are mounted under `apiBaseUrl`: `GET /flows`, `POST /generate-flow`, `POST /save-flow`, `GET /flow/:flowId`, `DELETE /flow/:flowId`, `GET` and `PUT /flow/:flowId/json`, `POST /publish-flow` and `GET /flow-preview/:flowId`. Each returns JSON.
+**Routes.** The flow routes are mounted under `apiBaseUrl`: `GET /flows`, `POST /generate-flow`, `POST /save-flow`, `GET /flow/:flowId`, `DELETE /flow/:flowId`, `GET` and `PUT /flow/:flowId/json` (`PUT` is also reachable as `PUT /update-flow/:flowId`), `PATCH /update-flow/:flowId` (rename a flow and set its categories), `POST /publish-flow` and `GET /flow-preview/:flowId`. Each returns JSON.
 
 **Errors** are JSON: `{ "error": "message", "code": "UPSTREAM_ERROR" }`. The codes are `INVALID_JSON`, `PAYLOAD_TOO_LARGE`, `BAD_REQUEST`, `INVALID_FLOW_ID`, `NOT_FOUND`, `FORBIDDEN`, `AUTHORIZATION_ERROR`, `CONFIGURATION_ERROR`, `UPSTREAM_UNREACHABLE`, `UPSTREAM_ERROR`, `UPSTREAM_INVALID_RESPONSE`, `FLOW_STILL_INDEXING`, `DOWNLOAD_URL_MISSING`, `DOWNLOAD_URL_INVALID`, `DOWNLOAD_HOST_NOT_ALLOWED`, `DOWNLOAD_TOO_MANY_REDIRECTS` and `INTERNAL_ERROR`.
 
@@ -256,7 +257,7 @@ You can change the builder's colours, fonts, corner radii and shadows, replace t
 />
 ```
 
-- **Presets** are built-in looks (the `FlowBuilderPreset` type). The builder ships one, `default`; see [Adding a preset](#adding-a-preset). A preset set through `theme.preset` is forced rather than stored, and the Settings brand picker is hidden unless `features.brandPicker` is `true`. Your `tokens` sit on top of the preset.
+- **Presets** are built-in looks (the `FlowBuilderPreset` type). The builder ships two: `default` and `indigo` — a cool blue-violet reference brand that retunes type, shape, borders and motion as well as colour: the interface speaks monospace, corners soften, near-black outlines become soft slate-indigo ones, secondary buttons turn into soft-filled chips and cards lift. Its file, `frontend/flow-builder/styles/brands/indigo.css`, is the worked example for [Adding a preset](#adding-a-preset). A preset set through `theme.preset` is forced rather than stored, and the Settings brand picker is hidden unless `features.brandPicker` is `true`. Your `tokens` sit on top of the preset.
 - **Tokens** are the `--fb-*` design variables, written in camelCase (`colorPrimary` becomes `--fb-color-primary`). `tokens` applies to light mode and `darkTokens` overrides it in dark mode. The tokens are listed in `frontend/flow-builder/styles/theme.css`.
 - **Values** must be plain CSS property values. A value containing `;`, `{`, `}`, `<`, `>`, `/*` or `url(` is dropped, so a token cannot close a declaration, inject markup or load a resource. Only known token names are accepted.
 - **Brand colours repeat.** The default teal and orange appear in several tokens on purpose. To recolour the primary, change `colorPrimary`, `colorPrimarySoft`, `colorFocusRing` and the primary button tokens together.
@@ -284,7 +285,7 @@ You can change the builder's colours, fonts, corner radii and shadows, replace t
 
 A preset is a second look layered over the default one. It ships in the stylesheet and appears in **Settings > Appearance > Brand**. To add one:
 
-1. Create `frontend/flow-builder/styles/brands/<name>.css`. Scope its selectors to `[data-flowbuilder-root][data-brand='<name>']` and override the `--fb-*` tokens from `theme.css`. Set every colour in both a light block and a dark block (the dark block adds `[data-theme='dark']`). The tests name any you miss.
+1. Create `frontend/flow-builder/styles/brands/<name>.css`. Scope its selectors to `[data-flowbuilder-root][data-brand='<name>']` and override the `--fb-*` tokens from `theme.css`. Set every colour in both a light block and a dark block (the dark block adds `[data-theme='dark']`). The tests name any you miss. A brand is more than its palette: the other knobs `theme.css` advertises (`--fb-font-sans`/`--fb-font-mono`, `--fb-radius-*`, `--fb-shadow-card`/`--fb-shadow-popover`, the motion defaults) can go in the light block too — they are theme-independent, so one copy serves both modes.
 2. Import it in `styles/app.css`, after `theme.css`.
 3. Add `<name>` to `BRANDS` in `styles/tokens.ts`. TypeScript then asks for the rest: the Settings label and tab icon in `BRAND_LABEL_KEYS` and `BRAND_ICONS` (`components/theme/brand.ts`), and the nav-rail logo in `BRAND_LOGOS` (`app/FlowBuilderShell.tsx`).
 4. Run `npm run build:frontend` and `npm run test:frontend`.
@@ -335,7 +336,7 @@ if (!result.valid) {
 }
 ```
 
-It checks that `version` is present; that there is at least one screen, with unique `id`s, a `title` and a layout with components; that input names are unique per screen; that a `terminal` screen exists; that every Footer has an `on-click-action` and every `navigate` target names an existing screen; and that `data-source` arrays are not empty. Only a screen's top-level components are checked, not those inside `If` branches. Each problem has a stable `code`.
+It checks that `version` is present; that there is at least one screen, with unique `id`s, a `title` and a layout with components; that input names are unique per screen; that a `terminal` screen exists; that every Footer has an `on-click-action` and every `navigate` target names an existing screen; and that `data-source` arrays are not empty. Components inside `If` branches are checked too. Each problem has a stable `code`.
 
 ## Try an embedded example
 
@@ -346,7 +347,7 @@ npm run examples:prepare                 # build, pack and install the package i
 FLOWBUILDER_FAKE_UPSTREAM=1 node examples/express-host/server.mjs
 ```
 
-Open http://127.0.0.1:4100/ and log in as the demo user. `FLOWBUILDER_FAKE_UPSTREAM=1` uses an in-memory fake instead of Infobip, so no API key is needed. Without it, set `INFOBIP_*` in `.env`. See [examples/express-host/README.md](examples/express-host/README.md). `npm run examples:verify` drives both pages in headless Chromium.
+Open http://127.0.0.1:4100/ and log in as the demo user. `FLOWBUILDER_FAKE_UPSTREAM=1` uses an in-memory fake instead of Infobip, so no API key is needed. Without it, set `INFOBIP_*` in `.env`. See [examples/express-host/README.md](examples/express-host/README.md). `npm run examples:verify` drives both embedded pages in headless Chromium; it needs `playwright-core` installed separately (`npm install playwright-core` and `npx playwright install chromium`, or point `PLAYWRIGHT_CORE` and `CHROMIUM_PATH` at existing copies).
 
 ## Running the standalone app
 
