@@ -61,6 +61,8 @@ tsconfig.lib.json         - Emits the `.d.ts` files of the React and element ent
 - Style with Tailwind utilities; colours, fonts and radii live as `--fb-*` tokens in `frontend/flow-builder/styles/theme.css` (each mapped for Tailwind in `tailwind-theme.css`), and each brand preset overrides them in its own file under `styles/brands/` (see "Adding a preset" in the README)
 - CSS must never reach outside `[data-flowbuilder-root]`: the builder is embedded in other people's pages. No global selectors, no variables on `:root`; prefix keyframes `fb-` and font families `FB `
 - Keep WhatsApp Flow JSON types in `src/types/` and validation rules in `src/validators/`
+- Every new source file (`.ts`, `.tsx`, `.js`, `.mjs`, `.css`, `.html`) starts with the Apache 2.0 header (`Copyright 2026 INFOBIP` …), copied from an existing file. Code taken from a third party keeps its own notice instead and gets an entry in `NOTICE`
+- Before adding a runtime dependency or bundling third-party code, check its licence is Apache-2.0-compatible (MIT, BSD, ISC, Apache-2.0 are fine; GPLv2-only, AGPL and unlicensed code are not) and add it to `NOTICE` if it ships in `dist/`. Run `npx license-checker --production --summary` to see the current set
 
 ## WhatsApp Flow Constraints
 
